@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Titanic Survival Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #dee2e6;
+        }
+        .required-field::after {
+            content: " *";
+            color: #dc3545;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="form-container">
+        <div class="form-header">
+            <h2>🚢 Titanic Survival Prediction</h2>
+            <p class="text-muted">Enter passenger details to predict survival probability</p>
+        </div>
+        
+        <form action="/predict" method="POST">
+            <!-- Pclass - Ticket Class -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="required-field">Ticket Class</label>
+                        <select name="Pclass" class="form-control" required>
+                            <option value="">Select class...</option>
+                            <option value="1">1st Class (Upper)</option>
+                            <option value="2">2nd Class (Middle)</option>
+                            <option value="3">3rd Class (Lower)</option>
+                        </select>
+                        <small class="form-text text-muted">1=Upper, 2=Middle, 3=Lower class</small>
+                    </div>
+                </div>
+                
+                <!-- Sex -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="required-field">Gender</label>
+                        <select name="Sex" class="form-control" required>
+                            <option value="">Select gender...</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Age -->
+            <div class="form-group">
+                <label class="required-field">Age</label>
+                <div class="input-group">
+                    <input type="number" name="Age" class="form-control" min="0" max="100" step="0.1" 
+                           placeholder="Enter age in years" required>
+                    <div class="input-group-append">
+                        <span class="input-group-text">years</span>
+                    </div>
+                </div>
+                <small class="form-text text-muted">Enter age (e.g., 29.5 for 29 and a half years)</small>
+            </div>
+
+            <!-- Family Members -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="required-field">Siblings & Spouses</label>
+                        <input type="number" name="SibSp" class="form-control" min="0" max="10" 
+                               placeholder="Number of siblings/spouses aboard" required>
+                        <small class="form-text text-muted">Number of siblings or spouses traveling with</small>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="required-field">Parents & Children</label>
+                        <input type="number" name="Parch" class="form-control" min="0" max="10" 
+                               placeholder="Number of parents/children aboard" required>
+                        <small class="form-text text-muted">Number of parents or children traveling with</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fare -->
+            <div class="form-group">
+                <label class="required-field">Ticket Fare</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">£</span>
+                    </div>
+                    <input type="number" name="Fare" class="form-control" min="0" max="600" step="0.01" 
+                           placeholder="Enter ticket fare" required>
+                </div>
+                <small class="form-text text-muted">Ticket price in British pounds (e.g., 7.25)</small>
+            </div>
+
+            <!-- Embarked -->
+            <div class="form-group">
+                <label class="required-field">Port of Embarkation</label>
+                <select name="Embarked" class="form-control" required>
+                    <option value="">Select port...</option>
+                    <option value="C">Cherbourg (C)</option>
+                    <option value="Q">Queenstown (Q)</option>
+                    <option value="S">Southampton (S)</option>
+                </select>
+                <small class="form-text text-muted">Port where the passenger boarded the Titanic</small>
+            </div>
+
+            <!-- Optional: Information fields (not used in prediction but kept for reference) -->
+            <div class="accordion mt-4" id="optionalFields">
+                <div class="card">
+                    <div class="card-header" id="headingOptional">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" 
+                                    data-target="#collapseOptional" aria-expanded="false" aria-controls="collapseOptional">
+                                ➕ Additional Information (Optional)
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseOptional" class="collapse" aria-labelledby="headingOptional" data-parent="#optionalFields">
+                        <div class="card-body">
+                            <p class="text-muted"><small>These fields are for reference only and will not affect the prediction.</small></p>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Passenger ID</label>
+                                        <input type="number" name="PassengerId" class="form-control" 
+                                               placeholder="Unique passenger ID">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Passenger Name</label>
+                                        <input type="text" name="Name" class="form-control" 
+                                               placeholder="Full name (e.g., 'Braund, Mr. Owen Harris')">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Ticket Number</label>
+                                        <input type="text" name="Ticket" class="form-control" 
+                                               placeholder="Ticket number (e.g., 'A/5 21171')">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Cabin Number</label>
+                                        <input type="text" name="Cabin" class="form-control" 
+                                               placeholder="Cabin number (e.g., 'C85')">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-4 text-center">
+                <button type="submit" class="btn btn-primary btn-lg px-5">
+                    🚀 Predict Survival
+                </button>
+                <button type="reset" class="btn btn-outline-secondary btn-lg px-5 ml-2">
+                    🔄 Clear Form
+                </button>
+            </div>
+            
+            <!-- Help text -->
+            <div class="mt-4 text-center">
+                <p class="text-muted"><small>
+                    <strong>Note:</strong> This prediction is based on a machine learning model trained on historical Titanic passenger data.
+                    The model uses the 7 most predictive features: Class, Gender, Age, Siblings/Spouses, Parents/Children, Fare, and Embarkation Port.
+                </small></p>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Bootstrap JS for optional fields accordion -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"></script>
+
+<script>
+    // Add some sample data functionality for testing
+    document.addEventListener('DOMContentLoaded', function() {
+        // Sample passenger data for testing
+        const samplePassengers = {
+            'firstClassFemale': {
+                'Pclass': '1',
+                'Sex': 'female',
+                'Age': '29',
+                'SibSp': '0',
+                'Parch': '0',
+                'Fare': '211.34',
+                'Embarked': 'S'
+            },
+            'thirdClassMale': {
+                'Pclass': '3',
+                'Sex': 'male',
+                'Age': '25',
+                'SibSp': '0',
+                'Parch': '0',
+                'Fare': '7.25',
+                'Embarked': 'S'
+            },
+            'childWithFamily': {
+                'Pclass': '2',
+                'Sex': 'female',
+                'Age': '8',
+                'SibSp': '3',
+                'Parch': '2',
+                'Fare': '41.58',
+                'Embarked': 'C'
+            }
+        };
+        
+        // Add sample buttons (optional - remove in production)
+        const sampleContainer = document.createElement('div');
+        sampleContainer.className = 'text-center mt-3';
+        sampleContainer.innerHTML = `
+            <p class="mb-2"><small><strong>Quick Test:</strong></small></p>
+            <button type="button" class="btn btn-sm btn-outline-info sample-btn" data-sample="firstClassFemale">
+                1st Class Female
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-info sample-btn" data-sample="thirdClassMale">
+                3rd Class Male
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-info sample-btn" data-sample="childWithFamily">
+                Child with Family
+            </button>
+        `;
+        document.querySelector('form').parentNode.insertBefore(sampleContainer, document.querySelector('form'));
+        
+        // Add event listeners for sample buttons
+        document.querySelectorAll('.sample-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const sampleType = this.getAttribute('data-sample');
+                const sample = samplePassengers[sampleType];
+                
+                // Fill form with sample data
+                Object.keys(sample).forEach(key => {
+                    const input = document.querySelector(`[name="${key}"]`);
+                    if (input) {
+                        input.value = sample[key];
+                    }
+                });
+                
+                // Show notification
+                alert(`Form filled with ${this.textContent.trim()} sample data.`);
+            });
+        });
+    });
+</script>
+</body>
+</html>
